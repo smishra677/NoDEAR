@@ -18,11 +18,11 @@ time_.append(time.time()-start_time)
 print(time_)
 print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
 exit()
-
+start_time= time.time()
 for k in range(3408):
     print(k,str(k*(50000))+'-'+str((k+1)*50000))
 
-    start_time= time.time()
+    
     simNum='output_'+str(k*(50000))+'_'+str((k+1)*50000)
     os.system('pyrho optimize --tablefile Lookup_human_fin_lookuptable.hdf  --vcffile '+str(simNum)+'.vcf --outfile ./results/'+str(simNum)+'.rmap --blockpenalty 50 --windowsize 50 --logfile .')
     
