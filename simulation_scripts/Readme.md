@@ -9,8 +9,9 @@ Please create all the folders inside the main folder. The folder names should be
 
 Examples:
 - `train_10k` → Training data with a 10kb window.
-- `train_10k`, `train_50k`, `train_100k`, `train_150k`, `train_200k`
-- `eqtes_10k`, `eqtes_50k`, `eqtes_100k`, `eqtes_150k`, `eqtes_200k`
+- `train_50k_100`→ Training data with a 50kb window with 100 individuals.
+- `train_10k`, `train_50k`, `train_100k`, `train_150k`, `train_200k` 
+- `eqtes_10k`, `eqtes_50k`, `eqtes_100k`, `eqtes_150k`, `eqtes_200k`,`eqtes_50k_100`
 - `noneqtes_10k`, `noneqtes_50k`, `noneqtes_100k`, `noneqtes_150k`, `noneqtes_200k`
 - `geneconversioneq_10k`, `geneconversioneq_50k`, `geneconversioneq_100k`, `geneconversioneq_150k`, `geneconversioneq_200k`
 - `popspliteq_10k`, `popspliteq_50k`, `popspliteq_100k`, `popspliteq_150k`, `popspliteq_200k`

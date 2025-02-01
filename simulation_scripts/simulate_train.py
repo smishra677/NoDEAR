@@ -15,7 +15,7 @@ def np_har(n):
     return sum(su_)
 
 
-sim={'train_10k':10000,'train_50k':10000,'train_100k':10000,'train_150k':10000,'train_200k':10000}
+sim={'train_50k_100':10000,'train_10k':10000,'train_50k':10000,'train_100k':10000,'train_150k':10000,'train_200k':10000}
 
 
 
@@ -31,8 +31,7 @@ for i in sim:
 	lis_tree=[]
 
 
-	#rate_array_1 = np.random.uniform(low=5e-13, high=1e-12, size=1000)
-	#rate_array_2 = np.random.uniform(low=1e-12, high=5e-12, size=1000)
+	
 	rate_array_3 = np.random.uniform(low=5e-12, high=1e-11, size=1000)
 	rate_array_4 = np.random.uniform(low=1e-11, high=5e-11, size=1000)
 	rate_array_5 = np.random.uniform(low=5e-11, high=1e-10, size=1000)
@@ -43,17 +42,12 @@ for i in sim:
 	rate_array_10 = np.random.uniform(low=1e-8, high=5e-8, size=1000)
 	rate_array_11 = np.random.uniform(low=5e-8, high=1e-7, size=1000)
 	rate_array_12 = np.random.uniform(low=1e-7, high=5e-7, size=1000)
-	#rate_array_13 = np.random.uniform(low=5e-7, high=1e-6, size=1000)
-	#rate_array_14 = np.random.uniform(low=1e-6, high=5e-6, size=1000)
-
-	#rate_array_3 = [10e-8 for i in range(1000)]
-	#rate_array = np.concatenate([ rate_array_3], axis=0)
-
-	#rate_array = np.concatenate([rate_array_1, rate_array_2, rate_array_3, rate_array_4, rate_array_5, rate_array_6, rate_array_7, rate_array_8, rate_array_9, rate_array_10, rate_array_11, rate_array_12, rate_array_13, rate_array_14], axis=0)
+	
+	
 	rate_array = np.concatenate([rate_array_3, rate_array_4, rate_array_5, rate_array_6, rate_array_7, rate_array_8, rate_array_9, rate_array_10, rate_array_11, rate_array_12], axis=0)
 
 	
-
+	n_pop=20
 	for simNum in range(sim[i]):
 		print(i, simNum)
 
@@ -67,7 +61,13 @@ for i in sim:
 			print('10k')
 			tsa=msp.sim_ancestry(samples=20,ploidy=1,population_size=70000,sequence_length=10000,recombination_rate=rate_array[simNum],model=msp.StandardCoalescent())
 			ts= msp.sim_mutations(tsa,rate=1e-8,model=msp.InfiniteSites())
-		elif i.split('_')[1]=='50k':
+		elif i=='train_50k_100':
+			print('train_50k_100')
+			tsa=msp.sim_ancestry(samples=100,ploidy=1, population_size=70000,sequence_length=50000,recombination_rate=rate_array[simNum],model=msp.StandardCoalescent())
+			ts= msp.sim_mutations(tsa,rate=1e-8,model=msp.InfiniteSites())
+			n_pop=100
+
+		elif i=='train_50k':
 			print('50k')
 			tsa=msp.sim_ancestry(samples=20,ploidy=1, population_size=70000,sequence_length=50000,recombination_rate=rate_array[simNum],model=msp.StandardCoalescent())
 			ts= msp.sim_mutations(tsa,rate=1e-8,model=msp.InfiniteSites())
@@ -84,6 +84,8 @@ for i in sim:
 			tsa=msp.sim_ancestry(samples=20,ploidy=1,population_size=70000,sequence_length=200000,recombination_rate=rate_array[simNum],model=msp.StandardCoalescent())
 			ts= msp.sim_mutations(tsa,rate=1e-8,model=msp.InfiniteSites())
 
+
+
 		H= ts.genotype_matrix()
 
 
@@ -97,7 +99,8 @@ for i in sim:
 		P = np.array([s.position for s in ts.sites()],dtype='float32')
 		print(ts.num_sites)
 
-		rho= ((ts.num_trees)/np_har(20))
+
+		rho= ((ts.num_trees)/np_har(n_pop))
 
 		with open(str(simNum)+".vcf", "w") as vcf_file:
 
