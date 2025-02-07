@@ -17,7 +17,7 @@ os.system('pyrho hyperparam -n 20 --numthreads 100 --mu 1e-8 --blockpenalty 50,1
 time_.append(time.time()-start_time)
 print(time_)
 print('$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$$')
-exit()
+
 start_time= time.time()
 for k in range(3408):
     print(k,str(k*(50000))+'-'+str((k+1)*50000))
