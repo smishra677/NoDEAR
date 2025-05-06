@@ -3,7 +3,7 @@ import numpy as np
 import os
 import pandas as pd
 import matplotlib.pyplot as plt
-from IPython.display import SVG, display
+#from IPython.display import SVG, display
 
 N0 = 70000
 sim={'noneqtes_10k':120,'noneqtes_50k':120,'noneqtes_100k':120,'noneqtes_150k':120,'noneqtes_200k':120}
@@ -70,34 +70,36 @@ for i in sim:
         df.to_csv(changes_rate, index=False)
         if i.split('_')[1]=='10k':
             print('10k')
-            tsa=msp.sim_ancestry(samples=20,ploidy=1,demography=demography,sequence_length=10000,recombination_rate=rate_array[simNum],model=msp.StandardCoalescent())
-            print(tsa.draw_text())
-            exit()
+            tsa=msp.sim_ancestry(samples=20,ploidy=1,demography=demography,sequence_length=10000,recombination_rate=rate_array[simNum],model=msp.StandardCoalescent(),additional_nodes=msp.NodeType.RECOMBINANT | msp.NodeType.GENE_CONVERSION,coalescing_segments_only=False)
             ts= msp.sim_mutations(tsa,rate=1e-8,model=msp.InfiniteSites())
         elif i.split('_')[1]=='50k':
             print('50k')
-            tsa=msp.sim_ancestry(samples=20,ploidy=1, demography=demography,sequence_length=50000,recombination_rate=rate_array[simNum],model=msp.StandardCoalescent())
+            tsa=msp.sim_ancestry(samples=20,ploidy=1, demography=demography,sequence_length=50000,recombination_rate=rate_array[simNum],model=msp.StandardCoalescent(),additional_nodes=msp.NodeType.RECOMBINANT | msp.NodeType.GENE_CONVERSION,coalescing_segments_only=False)
             ts= msp.sim_mutations(tsa,rate=1e-8,model=msp.InfiniteSites())
         
         elif i.split('_')[1]=='100k':
             print('100k')
-            tsa=msp.sim_ancestry(samples=20,ploidy=1,demography=demography,sequence_length=100000,recombination_rate=rate_array[simNum],model=msp.StandardCoalescent())
+            tsa=msp.sim_ancestry(samples=20,ploidy=1,demography=demography,sequence_length=100000,recombination_rate=rate_array[simNum],model=msp.StandardCoalescent(),additional_nodes=msp.NodeType.RECOMBINANT | msp.NodeType.GENE_CONVERSION,coalescing_segments_only=False)
             ts= msp.sim_mutations(tsa,rate=1e-8,model=msp.InfiniteSites())
         
         elif i.split('_')[1]=='150k':
             print('150k')
-            tsa=msp.sim_ancestry(samples=20,ploidy=1,demography=demography,sequence_length=150000,recombination_rate=rate_array[simNum],model=msp.StandardCoalescent())
+            tsa=msp.sim_ancestry(samples=20,ploidy=1,demography=demography,sequence_length=150000,recombination_rate=rate_array[simNum],model=msp.StandardCoalescent(),additional_nodes=msp.NodeType.RECOMBINANT | msp.NodeType.GENE_CONVERSION,coalescing_segments_only=False)
             ts= msp.sim_mutations(tsa,rate=1e-8,model=msp.InfiniteSites())
             
         elif i.split('_')[1]=='200k':
             print('200k---')
-            tsa=msp.sim_ancestry(samples=20,ploidy=1,demography=demography,sequence_length=200000,recombination_rate=rate_array[simNum],model=msp.StandardCoalescent())
+            tsa=msp.sim_ancestry(samples=20,ploidy=1,demography=demography,sequence_length=200000,recombination_rate=rate_array[simNum],model=msp.StandardCoalescent(),additional_nodes=msp.NodeType.RECOMBINANT | msp.NodeType.GENE_CONVERSION,coalescing_segments_only=False)
             ts= msp.sim_mutations(tsa,rate=1e-8,model=msp.InfiniteSites())
         H = ts.genotype_matrix()
         lia.append(ts.num_sites)
         P = np.array([s.position for s in ts.sites()], dtype='float32')
-
-        rho = ((ts.num_trees) / np_har(20))
+        node_table = ts.tables.nodes
+        flags = node_table.flags
+        recombinant_nodes = np.where(flags & msp.NodeType.RECOMBINANT.value)[0]
+        gc_nodes = np.where(flags & msp.NodeType.GENE_CONVERSION.value)[0]
+        rho = (len(recombinant_nodes)/2)/np_har(20)
+        #rho = ((ts.num_trees) / np_har(20))
 
         with open(str(simNum) + ".vcf", "w") as vcf_file:
             vcf_file.write("##fileformat=VCFv4.1\n")

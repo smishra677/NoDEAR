@@ -38,26 +38,26 @@ for i in sim:
         print('50k')
         if i.split('_')[1]=='10k':
             print('10k')
-            tsa=msp.sim_ancestry(samples=20,ploidy=1,population_size=70000,gene_conversion_rate=rate_array[simNum] * 0.5, gene_conversion_tract_length=300, sequence_length=10000, recombination_rate=rate_array[simNum]*0.5,model=msp.StandardCoalescent())
+            tsa=msp.sim_ancestry(samples=20,ploidy=1,population_size=70000,gene_conversion_rate=rate_array[simNum] * 0.5, gene_conversion_tract_length=300, sequence_length=10000, recombination_rate=rate_array[simNum]*0.5,model=msp.StandardCoalescent(),additional_nodes=msp.NodeType.RECOMBINANT | msp.NodeType.GENE_CONVERSION,coalescing_segments_only=False)
             ts= msp.sim_mutations(tsa,rate=1e-8,model=msp.InfiniteSites())
         elif i.split('_')[1]=='50k':
             print('50k')
-            tsa=msp.sim_ancestry(samples=20,ploidy=1, population_size=70000,gene_conversion_rate=rate_array[simNum] * 0.5, gene_conversion_tract_length=300, sequence_length=50000, recombination_rate=rate_array[simNum]*0.5,model=msp.StandardCoalescent())
+            tsa=msp.sim_ancestry(samples=20,ploidy=1, population_size=70000,gene_conversion_rate=rate_array[simNum] * 0.5, gene_conversion_tract_length=300, sequence_length=50000, recombination_rate=rate_array[simNum]*0.5,model=msp.StandardCoalescent(),additional_nodes=msp.NodeType.RECOMBINANT | msp.NodeType.GENE_CONVERSION,coalescing_segments_only=False)
             ts= msp.sim_mutations(tsa,rate=1e-8,model=msp.InfiniteSites())
             
         elif i.split('_')[1]=='100k':
             print('100k')
-            tsa=msp.sim_ancestry(samples=20,ploidy=1,population_size=70000,gene_conversion_rate=rate_array[simNum] * 0.5, gene_conversion_tract_length=300, sequence_length=100000, recombination_rate=rate_array[simNum]*0.5,model=msp.StandardCoalescent())
+            tsa=msp.sim_ancestry(samples=20,ploidy=1,population_size=70000,gene_conversion_rate=rate_array[simNum] * 0.5, gene_conversion_tract_length=300, sequence_length=100000, recombination_rate=rate_array[simNum]*0.5,model=msp.StandardCoalescent(),additional_nodes=msp.NodeType.RECOMBINANT | msp.NodeType.GENE_CONVERSION,coalescing_segments_only=False)
             ts= msp.sim_mutations(tsa,rate=1e-8,model=msp.InfiniteSites())
         
         elif i.split('_')[1]=='150k':
             print('150k')
-            tsa=msp.sim_ancestry(samples=20,ploidy=1,population_size=70000,gene_conversion_rate=rate_array[simNum] * 0.5, gene_conversion_tract_length=300, sequence_length=150000, recombination_rate=rate_array[simNum]*0.5,model=msp.StandardCoalescent())
+            tsa=msp.sim_ancestry(samples=20,ploidy=1,population_size=70000,gene_conversion_rate=rate_array[simNum] * 0.5, gene_conversion_tract_length=300, sequence_length=150000, recombination_rate=rate_array[simNum]*0.5,model=msp.StandardCoalescent(),additional_nodes=msp.NodeType.RECOMBINANT | msp.NodeType.GENE_CONVERSION,coalescing_segments_only=False)
             ts= msp.sim_mutations(tsa,rate=1e-8,model=msp.InfiniteSites())
             
         elif i.split('_')[1]=='200k':
             print('200k---')
-            tsa=msp.sim_ancestry(samples=20,ploidy=1,population_size=70000,gene_conversion_rate=rate_array[simNum] * 0.5, gene_conversion_tract_length=300, sequence_length=200000, recombination_rate=rate_array[simNum]*0.5,model=msp.StandardCoalescent())
+            tsa=msp.sim_ancestry(samples=20,ploidy=1,population_size=70000,gene_conversion_rate=rate_array[simNum] * 0.5, gene_conversion_tract_length=300, sequence_length=200000, recombination_rate=rate_array[simNum]*0.5,model=msp.StandardCoalescent(),additional_nodes=msp.NodeType.RECOMBINANT | msp.NodeType.GENE_CONVERSION,coalescing_segments_only=False)
             ts= msp.sim_mutations(tsa,rate=1e-8,model=msp.InfiniteSites())
         H = ts.genotype_matrix()
 
@@ -66,6 +66,13 @@ for i in sim:
 
         P = np.array([s.position for s in ts.sites()], dtype='float32')
         print(ts.num_sites)
+        node_table = ts.tables.nodes
+        flags = node_table.flags
+        recombinant_nodes = np.where(flags & msp.NodeType.RECOMBINANT.value)[0]
+        gc_nodes = np.where(flags & msp.NodeType.GENE_CONVERSION.value)[0]
+        rho = ((len(recombinant_nodes)/2)+(len(gc_nodes)/2))/np_har(20)
+
+
         with open(str(simNum)+".vcf", "w") as vcf_file:
                 vcf_file.write("##fileformat=VCFv4.1\n")
                 vcf_file.write("##source=msprime\n")
@@ -92,7 +99,7 @@ for i in sim:
 			#for var in ts.variants():
 				#file.write(f"{var.site.position}\t{var.alleles}\t{var.genotypes}\n")
 
-        rho = ((ts.num_trees) / np_har(20))
+        #rho = ((ts.num_trees) / np_har(20))
         
         lis.append(rho)
         lis1.append(rate_array[simNum])
