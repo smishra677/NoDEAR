@@ -21,3 +21,7 @@ Scripts to obtain human genome data are in the `./human_genome_scripts` folder.
    *(Please find the README file inside each subfolder.)*
 
 4. Run `train-NoDear.ipynb` (runs XGBoost, produces results)
+
+
+## Citations:
+  Matthew W Hahn, Sarthak R Mishra, Estimating recombination using only the allele frequency spectrum, Genetics, 2025;, iyaf108, https://doi.org/10.1093/genetics/iyaf108
